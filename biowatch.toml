@@ -9,7 +9,7 @@ dpmm=8
 file="biowatch.png"
 properties = {
     size=[15,0],
-    position=[1,-5],
+    position=[1,-10],
     darkness=50000,
     left=true,
     bottom=true }
@@ -18,22 +18,24 @@ properties = {
 file="biohazard.png"
 properties = {
     size=[20,0],
-    position=[-1,-5],
+    position=[-1,-10],
     darkness=50000,
     right=true,
     bottom=true }
 
 [[text]]
-value="testing"
+input=0
+font="fonts/Nunito-Regular.ttf"
+fontsize=24.0
 properties= {
     position=[0,0],
     center = true,
-    top = true}
+    bottom = true }
 
 
 [[qr]]
 input=0
 properties = {
-    position=[0,3],
+    position=[0,-1],
     size=[30,30],
     center=true}
