@@ -15,6 +15,12 @@ func End(output io.Writer) {
 	fmt.Fprint(output, "^FS,^XZ\n")
 }
 func MoveCursor(x int, y int, output io.Writer) {
+	if x < 0 {
+		x = 0
+	}
+	if y < 0 {
+		y = 0
+	}
 	fmt.Fprintf(output, "^FO%d,%d\n", x, y)
 }
 func PutImage(source image.Image, darkness uint16, output io.Writer) {

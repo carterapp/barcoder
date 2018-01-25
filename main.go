@@ -22,6 +22,10 @@ func main() {
 			Value: "barcoder.toml",
 			Usage: "Load configuration from FILE",
 		},
+		cli.StringFlag{
+			Name:  "output, o",
+			Usage: "Output to FILE. Default to std output",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 		config, err := loadConfig(c.GlobalString("config"))
@@ -31,12 +35,11 @@ func main() {
 		output := os.Stdout
 		outputfile := c.GlobalString("output")
 		if outputfile != "" {
-			output, err = os.Open(outputfile)
+			output, err = os.Create(outputfile)
 			if err != nil {
 				return err
 			}
 		}
-		fmt.Println("%+v", *config)
 		return barcodes.Process(*config, output, c.Args())
 	}
 
