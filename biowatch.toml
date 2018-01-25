@@ -4,21 +4,29 @@ unit="mm"
 size=[75,50]
 dpmm=8
 
-[[image]]
-  file="biowatch.png"
-  size=[15,0]
-  position=[1,23]
-  darkness=50000
 
 [[image]]
-  file="biohazard.png"
-  size=[20,0]
-  position=[54,28]
-  darkness=50000
+file="biowatch.png"
+properties = {
+    size=[15,0],
+    position=[1,-5],
+    darkness=50000,
+    left=true,
+    bottom=true }
+
+[[image]]
+file="biohazard.png"
+properties = {
+    size=[20,0],
+    position=[-1,-5],
+    darkness=50000,
+    right=true,
+    bottom=true }
 
 
 [[qr]]
-  input=0
-  position=[0,3]
-  size=[30,30]
-  center=true
+input=0
+properties = {
+    position=[0,3],
+    size=[30,30],
+    center=true}

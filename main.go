@@ -15,7 +15,7 @@ func main() {
 	app := cli.NewApp()
 	app.Version = "0.1"
 	app.Name = "barcoder"
-	app.Usage = "Generate a label (usually with a barcode)"
+	app.Usage = "Generate a label (usually with a barcode) and generate output in ZPL for Zebra label printers"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, c",
@@ -40,7 +40,8 @@ func main() {
 				return err
 			}
 		}
-		return barcodes.Process(*config, output, c.Args())
+		processor := barcodes.New(*config)
+		return processor.Process(output, c.Args())
 	}
 
 	if err := app.Run(os.Args); err != nil {
