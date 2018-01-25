@@ -6,10 +6,10 @@ import (
 
 	"github.com/codenaut/barcoder/images"
 	"github.com/codenaut/barcoder/zpl"
-	"gopkg.in/urfave/cli.v1"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
+	"gopkg.in/urfave/cli.v1"
 )
 
 type internal struct {
