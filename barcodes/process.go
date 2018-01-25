@@ -1,6 +1,7 @@
 package barcodes
 
 import (
+	"fmt"
 	"image"
 	"io"
 
@@ -8,9 +9,17 @@ import (
 	"github.com/codenaut/barcoder/zpl"
 
 	"github.com/boombuler/barcode"
+	"github.com/boombuler/barcode/code128"
 	"github.com/boombuler/barcode/qr"
 	"gopkg.in/urfave/cli.v1"
 )
+
+const (
+	typeQr = iota
+	typeCode128
+)
+
+type barcodeType int
 
 type internal struct {
 	config      BarcodeConfig
@@ -107,21 +116,32 @@ func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 		}
 	}
-	t.processBarcodes(t.config.Qr, args, output)
-	t.processBarcodes(t.config.Code128, args, output)
+	t.processBarcodes(t.config.Qr, typeQr, args, output)
+	t.processBarcodes(t.config.Code128, typeCode128, args, output)
 	zpl.End(output)
 	return nil
 }
-func (t *internal) processBarcodes(confs []BarcodeProperties, args cli.Args, output io.Writer) error {
+func (t *internal) processBarcodes(confs []BarcodeProperties, bType barcodeType, args cli.Args, output io.Writer) error {
 	for _, conf := range confs {
 		str := conf.Value
 		if str == "" {
 			str = args.Get(conf.Input)
 		}
-		if qrCode, err := qr.Encode(str, qr.M, qr.Auto); err != nil {
+		var bCode barcode.Barcode
+		var err error
+		switch bType {
+		case typeQr:
+			bCode, err = qr.Encode(str, qr.M, qr.Auto)
+		case typeCode128:
+			bCode, err = code128.Encode(str)
+		default:
+			return fmt.Errorf("Bad barcode type: %d", bType)
+		}
+
+		if err != nil {
 			return err
 		} else {
-			if err := t.placeBarcode(qrCode, conf.Properties, 0xafff, output); err != nil {
+			if err := t.placeBarcode(bCode, conf.Properties, 0xafff, output); err != nil {
 				return err
 			}
 		}
