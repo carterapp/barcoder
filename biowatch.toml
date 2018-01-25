@@ -23,6 +23,13 @@ properties = {
     right=true,
     bottom=true }
 
+[[text]]
+value="testing"
+properties= {
+    position=[0,0],
+    center = true,
+    top = true}
+
 
 [[qr]]
 input=0

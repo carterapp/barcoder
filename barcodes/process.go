@@ -11,6 +11,7 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/code128"
 	"github.com/boombuler/barcode/qr"
+	"github.com/fogleman/gg"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -38,12 +39,20 @@ type BarcodeConfig struct {
 	Dpmm   int
 
 	Image   []ImageFileConfig
+	Text    []TextConfig
 	Qr      []BarcodeProperties
 	Code128 []BarcodeProperties
 }
 type ImageFileConfig struct {
 	File       string
 	Darkness   uint16
+	Properties ImageConfig
+}
+type TextConfig struct {
+	Input      int
+	Value      string
+	Font       string
+	FontSize   float64
 	Properties ImageConfig
 }
 type BarcodeProperties struct {
@@ -116,8 +125,43 @@ func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 		}
 	}
+	for _, txt := range t.config.Text {
+		str := txt.Value
+		if str == "" {
+			str = args.Get(txt.Input)
+		}
+		ctx := gg.NewContext(t.width, t.height)
+		font := txt.Font
+		fontSize := txt.FontSize
+		if font == "" {
+			font = "/Library/Fonts/Verdana.ttf"
+		}
+		if fontSize == 0 {
+			fontSize = 72
+		}
+		if err := ctx.LoadFontFace(font, fontSize); err != nil {
+			return err
+		}
+		w, h := ctx.MeasureString(str)
+
+		strCtx := gg.NewContext(int(w*1.1), int(h*1.4))
+		if err := strCtx.LoadFontFace(font, fontSize); err != nil {
+			return err
+		}
+		strCtx.SetColor(image.White)
+		strCtx.Clear()
+		strCtx.SetColor(image.Black)
+		x, y := 0, 0
+		strCtx.DrawString(str, float64(x), float64(y)+h)
+		img := strCtx.Image()
+
+		t.insertImage(img, txt.Properties, 0xafff, output)
+
+	}
+
 	t.processBarcodes(t.config.Qr, typeQr, args, output)
 	t.processBarcodes(t.config.Code128, typeCode128, args, output)
+
 	zpl.End(output)
 	return nil
 }

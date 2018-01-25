@@ -3,7 +3,7 @@
 
 [[projects]]
   name = "github.com/boombuler/barcode"
-  packages = [".","qr","utils"]
+  packages = [".","code128","qr","utils"]
   revision = "3cfea5ab600ae37946be2b763b8ec2c1cf2d272d"
   version = "v1.0.0"
 
@@ -14,6 +14,18 @@
   version = "v1.3.0"
 
 [[projects]]
+  name = "github.com/fogleman/gg"
+  packages = ["."]
+  revision = "6166aa3c1afaee416f384645a81636267aee6d25"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/freetype"
+  packages = ["raster","truetype"]
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+
+[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "acdc4509485b587f5e675510c4f2c63e90ff68a8"
@@ -22,7 +34,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/image"
-  packages = ["bmp","tiff","tiff/lzw"]
+  packages = ["bmp","font","font/basicfont","font/plan9font","math/fixed","tiff","tiff/lzw"]
   revision = "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
 
 [[projects]]
@@ -34,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "87e8f8b627b82a41d6026c1643deeb8594036df2d999aeeaecb7a26dfc7ad0af"
+  inputs-digest = "e9ab4cb1b0a910af7b3861b219c4745634c52480970e53a1e8f3046a07e1391e"
   solver-name = "gps-cdcl"
   solver-version = 1

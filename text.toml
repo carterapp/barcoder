@@ -1,0 +1,42 @@
+#offset=[90,0]
+offset=[0,0]
+unit="mm"
+size=[75,50]
+dpmm=8
+
+
+
+[[text]]
+value="testing"
+font="fonts/Nunito-Regular.ttf"
+fontsize=36.0
+properties= {
+    position=[0,0],
+    center = true,
+    top = true}
+
+[[text]]
+value="testing2"
+font="fonts/Nunito-Regular.ttf"
+fontsize=72.0
+properties= {
+    position=[0,0],
+    center = true,
+    bottom = true}
+
+[[text]]
+value="testing3"
+fontsize=14.0
+properties= {
+    position=[0,0],
+    left = true,
+    bottom = true}
+
+[[text]]
+value="testing4"
+fontsize=14.0
+properties= {
+    position=[0,0],
+    right = true,
+    top = true}
+
