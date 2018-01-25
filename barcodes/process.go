@@ -28,15 +28,16 @@ type BarcodeConfig struct {
 	Dpi    int
 	Dpmm   int
 
-	Image []ImageFileConfig
-	Qr    []QrConfig
+	Image   []ImageFileConfig
+	Qr      []BarcodeProperties
+	Code128 []BarcodeProperties
 }
 type ImageFileConfig struct {
 	File       string
 	Darkness   uint16
 	Properties ImageConfig
 }
-type QrConfig struct {
+type BarcodeProperties struct {
 	Input      int
 	Value      string
 	Properties ImageConfig
@@ -106,21 +107,25 @@ func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 		}
 	}
-	for _, qrConfig := range t.config.Qr {
-		str := qrConfig.Value
+	t.processBarcodes(t.config.Qr, args, output)
+	t.processBarcodes(t.config.Code128, args, output)
+	zpl.End(output)
+	return nil
+}
+func (t *internal) processBarcodes(confs []BarcodeProperties, args cli.Args, output io.Writer) error {
+	for _, conf := range confs {
+		str := conf.Value
 		if str == "" {
-			str = args.Get(qrConfig.Input)
+			str = args.Get(conf.Input)
 		}
 		if qrCode, err := qr.Encode(str, qr.M, qr.Auto); err != nil {
 			return err
 		} else {
-			if err := t.placeBarcode(qrCode, qrConfig.Properties, 0xafff, output); err != nil {
+			if err := t.placeBarcode(qrCode, conf.Properties, 0xafff, output); err != nil {
 				return err
 			}
 		}
-
 	}
-	zpl.End(output)
 	return nil
 }
 
