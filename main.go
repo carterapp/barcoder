@@ -19,8 +19,8 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, c",
-			Value: "barcoder.toml",
-			Usage: "Load configuration from FILE",
+			Value: "",
+			Usage: "Load configuration from FILE. Default to std input",
 		},
 		cli.StringFlag{
 			Name:  "output, o",
@@ -51,14 +51,23 @@ func main() {
 }
 
 func loadConfig(filename string) (*barcodes.BarcodeConfig, error) {
-	if content, err := ioutil.ReadFile(filename); err != nil {
-		return nil, err
-	} else {
+	unmarshall := func(content []byte) (*barcodes.BarcodeConfig, error) {
 		var config barcodes.BarcodeConfig
 		if err := toml.Unmarshal(content, &config); err != nil {
 			return nil, err
 		}
 		return &config, nil
+	}
+	if filename == "" {
+		if content, err := ioutil.ReadAll(os.Stdin); err != nil {
+			return nil, err
+		} else {
+			return unmarshall(content)
+		}
+	} else if content, err := ioutil.ReadFile(filename); err != nil {
+		return nil, err
+	} else {
+		return unmarshall(content)
 	}
 
 }
