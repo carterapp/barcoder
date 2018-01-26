@@ -30,7 +30,7 @@ fontsize=24.0
 properties= {
     position=[0,0],
     center = true,
-    bottom = true }
+    top = true }
 
 
 [[qr]]
@@ -39,3 +39,12 @@ properties = {
     position=[0,-1],
     size=[30,30],
     center=true}
+
+[[code128]]
+input=0
+properties = {
+    position=[0,0],
+    size=[0,10],
+    center=true,
+    bottom=true}
+ 

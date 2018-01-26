@@ -196,7 +196,15 @@ func (t *internal) processBarcodes(confs []BarcodeProperties, bType barcodeType,
 func (t *internal) placeBarcode(img barcode.Barcode, imageConf ImageConfig, darkness uint16, output io.Writer) error {
 	imageSize := imageConf.Size
 	if len(imageSize) > 1 {
+		origW, origH := img.Bounds().Size().X, img.Bounds().Size().Y
 		w, h := int(float64(imageSize[0])*t.scaleFactor), int(float64(imageSize[1])*t.scaleFactor)
+		if w < origW {
+			w = origW
+		}
+		if h < origH {
+			h = origH
+		}
+
 		if scaled, err := barcode.Scale(img, w, h); err != nil {
 			return err
 		} else {
