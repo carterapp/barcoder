@@ -28,7 +28,7 @@ Usage
         help, h  Shows a list of commands or help for one command
 
     GLOBAL OPTIONS:
-        --config value, -c value  Load configuration from FILE (default: "barcoder.toml")
+        --config value, -c value  Load configuration from FILE. Default to std input
         --output value, -o value  Output to FILE. Default to std output
         --help, -h                show help
         --version, -v             print the version
