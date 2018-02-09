@@ -24,7 +24,7 @@ properties = {
     bottom=true }
 
 [[text]]
-input=0
+input=1
 font="fonts/Nunito-Regular.ttf"
 fontsize=24.0
 properties= {
@@ -41,7 +41,7 @@ properties = {
     center=true}
 
 [[code128]]
-input=0
+input=1
 properties = {
     position=[0,0],
     size=[0,10],
