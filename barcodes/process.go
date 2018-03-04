@@ -38,10 +38,11 @@ type BarcodeConfig struct {
 	Dpi    int
 	Dpmm   int
 
-	Image   []ImageFileConfig
-	Text    []TextConfig
-	Qr      []BarcodeProperties
-	Code128 []BarcodeProperties
+	Image       []ImageFileConfig
+	Text        []TextConfig
+	Qr          []BarcodeProperties
+	Code128     []BarcodeProperties
+	Code128Text []TextConfig
 }
 type ImageFileConfig struct {
 	File       string
@@ -107,6 +108,43 @@ func scale(factor float64, size []int) (int, int) {
 	return 0, 0
 }
 
+func (t *internal) processText(value string, txt TextConfig, output io.Writer, args cli.Args) error {
+	str := value
+	if str == "" {
+		str = txt.Value
+	}
+	if str == "" {
+		str = args.Get(txt.Input)
+	}
+	ctx := gg.NewContext(t.width, t.height)
+	font := txt.Font
+	fontSize := txt.FontSize
+	if font == "" {
+		font = "/Library/Fonts/Verdana.ttf"
+	}
+	if fontSize == 0 {
+		fontSize = 72
+	}
+	if err := ctx.LoadFontFace(font, fontSize); err != nil {
+		return err
+	}
+	w, h := ctx.MeasureString(str)
+
+	strCtx := gg.NewContext(int(w*1.1), int(h*1.4))
+	if err := strCtx.LoadFontFace(font, fontSize); err != nil {
+		return err
+	}
+	strCtx.SetColor(image.White)
+	strCtx.Clear()
+	strCtx.SetColor(image.Black)
+	x, y := 0, 0
+	strCtx.DrawString(str, float64(x), float64(y)+h)
+	img := strCtx.Image()
+
+	t.insertImage(img, txt.Properties, 0xafff, output)
+	return nil
+}
+
 func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 	zpl.Start(output)
@@ -125,38 +163,23 @@ func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 		}
 	}
+	for _, txt := range t.config.Code128Text {
+		v := txt.Value
+		if v == "" {
+			v = args.Get(txt.Input)
+		}
+		if barcode, err := code128.Encode(v); err != nil {
+			return err
+		} else {
+			if err := t.processText(fmt.Sprintf("%s%d", v, barcode.CheckSum()), txt, output, args); err != nil {
+				return err
+			}
+		}
+	}
 	for _, txt := range t.config.Text {
-		str := txt.Value
-		if str == "" {
-			str = args.Get(txt.Input)
-		}
-		ctx := gg.NewContext(t.width, t.height)
-		font := txt.Font
-		fontSize := txt.FontSize
-		if font == "" {
-			font = "/Library/Fonts/Verdana.ttf"
-		}
-		if fontSize == 0 {
-			fontSize = 72
-		}
-		if err := ctx.LoadFontFace(font, fontSize); err != nil {
+		if err := t.processText("", txt, output, args); err != nil {
 			return err
 		}
-		w, h := ctx.MeasureString(str)
-
-		strCtx := gg.NewContext(int(w*1.1), int(h*1.4))
-		if err := strCtx.LoadFontFace(font, fontSize); err != nil {
-			return err
-		}
-		strCtx.SetColor(image.White)
-		strCtx.Clear()
-		strCtx.SetColor(image.Black)
-		x, y := 0, 0
-		strCtx.DrawString(str, float64(x), float64(y)+h)
-		img := strCtx.Image()
-
-		t.insertImage(img, txt.Properties, 0xafff, output)
-
 	}
 
 	t.processBarcodes(t.config.Qr, typeQr, args, output)
