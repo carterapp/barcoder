@@ -46,6 +46,7 @@ type BarcodeConfig struct {
 }
 type ImageFileConfig struct {
 	File       string
+	Input      int
 	Darkness   uint16
 	Properties ImageConfig
 }
@@ -149,7 +150,11 @@ func (t *internal) Process(output io.Writer, args cli.Args) error {
 
 	zpl.Start(output)
 	for _, img := range t.config.Image {
-		if i, err := images.OpenPng(img.File); err != nil {
+		filename := img.File
+		if filename == "" {
+			filename = args.Get(img.Input)
+		}
+		if i, err := images.OpenPng(filename); err != nil {
 			return err
 		} else {
 			darknessLimit := img.Darkness
