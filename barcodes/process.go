@@ -71,6 +71,7 @@ type ImageConfig struct {
 	Bottom   bool
 	Left     bool
 	Right    bool
+	Rotate   float64
 }
 
 func New(config BarcodeConfig) *internal {
@@ -249,6 +250,7 @@ func (t *internal) placeImage(img image.Image, imageConf ImageConfig, darkness u
 		w, h := int(float64(imageSize[0])*t.scaleFactor), int(float64(imageSize[1])*t.scaleFactor)
 		img = images.Resize(img, w, h)
 	}
+
 	t.insertImage(img, imageConf, darkness, output)
 	return nil
 }
@@ -256,6 +258,9 @@ func (t *internal) placeImage(img image.Image, imageConf ImageConfig, darkness u
 func (t *internal) insertImage(img image.Image, imageConf ImageConfig, darkness uint16, output io.Writer) {
 	x, y := scale(t.scaleFactor, imageConf.Position)
 
+	if imageConf.Rotate != 0.0 {
+		img = images.Rotate(img, imageConf.Rotate)
+	}
 	imgWidth := float64(img.Bounds().Size().X)
 	imgHeight := float64(img.Bounds().Size().Y)
 
