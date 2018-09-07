@@ -74,9 +74,7 @@ type ImageConfig struct {
 	Rotate   float64
 }
 
-func New(config BarcodeConfig) *internal {
-	xOffset := 0
-	yOffset := 0
+func New(config BarcodeConfig, xOffset int, yOffset int) *internal {
 
 	scaleFactor := float64(1.0)
 	if config.Dpmm > 0 {
